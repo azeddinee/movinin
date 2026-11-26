@@ -2023,6 +2023,7 @@ describe('POST /api/users/:page/:size', () => {
   })
 })
 
+describe('POST /api/users host isolation', () => {
   it('limits an agency user directory to its own customers', async () => {
     const agencyName = testHelper.getAgencyName()
     const agencyId = await testHelper.createAgency(`${agencyName}@test.movinin.io`, agencyName)
