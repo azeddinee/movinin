@@ -189,6 +189,33 @@ describe('POST /api/sign-up', () => {
   })
 })
 
+describe('POST /api/host-sign-up', () => {
+  it('creates a host account with the Agency role and online-only payments', async () => {
+    const email = testHelper.GetRandomEmail()
+    const payload: movininTypes.SignUpPayload = {
+      email,
+      password: USER1_PASSWORD,
+      fullName: 'Marketplace Host',
+      language: testHelper.LANGUAGE,
+      type: movininTypes.UserType.Admin,
+      payLater: true,
+    } as movininTypes.SignUpPayload
+
+    const response = await request(app)
+      .post('/api/host-sign-up')
+      .send(payload)
+
+    expect(response.statusCode).toBe(200)
+    const user = await User.findOne({ email })
+    expect(user).not.toBeNull()
+    expect(user?.type).toBe(movininTypes.UserType.Agency)
+    expect(user?.payLater).toBe(false)
+
+    await Token.deleteMany({ user: user?._id })
+    await user?.deleteOne()
+  })
+})
+
 // eslint-disable-next-line jest/no-disabled-tests
 describe.skip('POST /api/admin-sign-up', () => {
   it('should create an admin user', async () => {
