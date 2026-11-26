@@ -194,7 +194,7 @@ describe('POST /api/create-property', () => {
     const payload: movininTypes.CreatePropertyPayload = {
       name: 'Injected Property',
       agency: AGENCY2_ID, // Agency 1 attempts to assign property to Agency 2
-      type: movininTypes.PropertyType.House,
+      type: movininTypes.PropertyType.Hotel,
       description: '<p>Test description</p>',
       image: MAIN_IMAGE1,
       images: [],
@@ -226,6 +226,7 @@ describe('POST /api/create-property', () => {
     const createdProperty = await Property.findById(res.body._id)
     expect(createdProperty?.agency.toString()).toBe(AGENCY1_ID)
     expect(createdProperty?.hidden).toBe(true)
+    expect(createdProperty?.type).toBe(movininTypes.PropertyType.Hotel)
     if (createdProperty?.image) {
       const imgPath = path.join(env.CDN_PROPERTIES, createdProperty.image)
       if (await helper.pathExists(imgPath)) {
