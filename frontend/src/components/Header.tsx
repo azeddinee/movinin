@@ -218,7 +218,7 @@ const Header = ({
 
   const handleHostSignup = () => {
     const adminHost = env.ADMIN_HOST || window.location.origin
-    window.location.href = helper.joinURL(adminHost, 'host-sign-up')
+    window.location.href = `${adminHost.replace(/\\/$/, '')}/host-sign-up`
   }
 
   const handleSignout = async () => {
