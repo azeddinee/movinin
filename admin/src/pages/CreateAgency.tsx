@@ -41,7 +41,6 @@ const CreateAgency = () => {
   const [avatarError, setAvatarError] = useState(false)
   const [emailValid, setEmailValid] = useState(true)
   const [phoneValid, setPhoneValid] = useState(true)
-  const [payLater, setPayLater] = useState(true)
 
   const handleFullNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFullName(e.target.value)
@@ -221,7 +220,7 @@ const CreateAgency = () => {
         language: UserService.getLanguage(),
         type: movininTypes.RecordType.Agency,
         avatar,
-        payLater,
+        payLater: false,
       }
 
       const status = await UserService.create(data)
@@ -296,20 +295,6 @@ const CreateAgency = () => {
               </FormHelperText>
             </FormControl>
 
-            <FormControl component="fieldset" style={{ marginTop: 15 }}>
-              <FormControlLabel
-                control={(
-                  <Switch
-                    checked={payLater}
-                    onChange={(e) => {
-                      setPayLater(e.target.checked)
-                    }}
-                    color="primary"
-                  />
-                )}
-                label={commonStrings.PAY_LATER}
-              />
-            </FormControl>
 
             <div className="info">
               <InfoIcon />
