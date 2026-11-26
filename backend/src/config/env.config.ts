@@ -61,7 +61,7 @@ export const WEBSITE_NAME = __env__('MI_WEBSITE_NAME', false, "Movin' In")
  *
  * @type {string}
  */
-export const BASE_CURRENCY = __env__('MI_BASE_CURRENCY', false, 'USD')
+export const BASE_CURRENCY = __env__('MI_BASE_CURRENCY', false, 'MAD')
 
 /**
  * Indicate whether we are in CI environment or not.
@@ -358,7 +358,7 @@ export const FRONTEND_HOST = __env__('MI_FRONTEND_HOST', true)
  *
  * @type {string}
  */
-export const DEFAULT_LANGUAGE = __env__('MI_DEFAULT_LANGUAGE', false, 'en')
+export const DEFAULT_LANGUAGE = __env__('MI_DEFAULT_LANGUAGE', false, 'fr')
 
 /**
  * Default Minimum age for rental. Default is 21 years.
@@ -381,7 +381,7 @@ export const EXPO_ACCESS_TOKEN = __env__('MI_EXPO_ACCESS_TOKEN', false)
  *
  * @type {string}
  */
-export const TIMEZONE = __env__('MI_TIMEZONE', false, 'UTC')
+export const TIMEZONE = __env__('MI_TIMEZONE', false, 'Africa/Casablanca')
 
 /**
  * Stripe secret key.
@@ -483,7 +483,7 @@ export const IPINFO_API_KEY = __env__('MI_IPINFO_API_KEY', false)
  *
  * @type {string}
  */
-export const IPINFO_DEFAULT_COUNTRY = __env__('MI_IPINFO_DEFAULT_COUNTRY', false, 'US')
+export const IPINFO_DEFAULT_COUNTRY = __env__('MI_IPINFO_DEFAULT_COUNTRY', false, 'MA')
 
 /**
  * Enables or disables Sentry error reporting. Set to true to enable.
