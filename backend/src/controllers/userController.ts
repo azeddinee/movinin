@@ -1194,8 +1194,8 @@ export const update = async (req: Request, res: Response) => {
     if (typeof enableEmailNotifications !== 'undefined') {
       user.enableEmailNotifications = enableEmailNotifications
     }
-    if (typeof payLater !== 'undefined') {
-      user.payLater = payLater
+    if (typeof payLater !== 'undefined' || user.type === movininTypes.UserType.Agency) {
+      user.payLater = user.type === movininTypes.UserType.Agency ? false : payLater
     }
     if (sessionUser.type === movininTypes.UserType.Admin || isAuthorizedAgencyUser) {
       if (typeof blacklisted !== 'undefined') {
