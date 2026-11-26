@@ -1006,6 +1006,12 @@ describe('GET /api/check-property/:id', () => {
       .set(env.X_ACCESS_TOKEN, token)
     expect(res.statusCode).toBe(400)
 
+    const otherOwnerToken = await testHelper.generateToken(AGENCY2_ID)
+    res = await request(app)
+      .get(`/api/check-property/${PROPERTY_ID}`)
+      .set(env.X_ACCESS_TOKEN, otherOwnerToken)
+    expect(res.statusCode).toBe(403)
+
     await testHelper.signout(token)
   })
 })
