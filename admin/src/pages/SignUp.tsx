@@ -128,7 +128,7 @@ const SignUp = () => {
         language: UserService.getLanguage(),
       }
 
-      const status = await UserService.signup(data)
+      const status = await UserService.hostSignup(data)
 
       if (status === 200) {
         const signInResult = await UserService.signin({
