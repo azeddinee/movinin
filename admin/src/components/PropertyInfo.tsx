@@ -199,7 +199,10 @@ const PropertyInfo = ({
             {edit && property.hidden && (
               <li>
                 <div className="property-info-list-item">
-                  <Hidden />
+                  <Hidden
+                    label={user?.type === movininTypes.UserType.Agency ? strings.PENDING_REVIEW : undefined}
+                    title={user?.type === movininTypes.UserType.Agency ? cpStrings.PENDING_REVIEW : undefined}
+                  />
                 </div>
               </li>
             )}
