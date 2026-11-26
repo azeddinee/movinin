@@ -5,6 +5,7 @@ const routes = {
   activate: '/api/activate',
   resend: '/api/resend/:type/:email/:reset',
   signup: '/api/sign-up',
+  hostSignup: '/api/host-sign-up',
   adminSignup: '/api/admin-sign-up',
   confirmEmail: '/api/confirm-email/:email/:token',
   resendLink: '/api/resend-link',
