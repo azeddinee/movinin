@@ -225,6 +225,7 @@ describe('POST /api/create-property', () => {
 
     const createdProperty = await Property.findById(res.body._id)
     expect(createdProperty?.agency.toString()).toBe(AGENCY1_ID)
+    expect(createdProperty?.hidden).toBe(true)
     if (createdProperty?.image) {
       const imgPath = path.join(env.CDN_PROPERTIES, createdProperty.image)
       if (await helper.pathExists(imgPath)) {
@@ -492,7 +493,9 @@ describe('PUT /api/update-property', () => {
         .send(payload)
       expect(res.statusCode).toBe(200)
       expect(res.body.agency).toBe(AGENCY1_ID)
+      expect(res.body.hidden).toBe(true)
       expect((await Property.findById(property._id))?.agency.toString()).toBe(AGENCY1_ID)
+      expect((await Property.findById(property._id))?.hidden).toBe(true)
     } finally {
       await property.deleteOne()
     }
@@ -684,6 +687,15 @@ describe('POST /api/properties/:page/:size', () => {
     expect(res.body[0].resultData.length).toBe(0)
 
     await testHelper.signout(token)
+
+    const agencyToken = await testHelper.generateToken(AGENCY1_ID)
+    const otherAgencyPayload = { ...payload, agencies: [AGENCY2_ID] }
+    const ownerRes = await request(app)
+      .post(`/api/properties/${testHelper.PAGE}/${testHelper.SIZE}`)
+      .set(env.X_ACCESS_TOKEN, agencyToken)
+      .send(otherAgencyPayload)
+    expect(ownerRes.statusCode).toBe(200)
+    expect(ownerRes.body[0].resultData).toEqual([])
   })
 })
 
@@ -709,6 +721,13 @@ describe('POST /api/booking-properties/:page/:size', () => {
     expect(res.statusCode).toBe(400)
 
     await testHelper.signout(token)
+
+    const agencyToken = await testHelper.generateToken(AGENCY1_ID)
+    const forbiddenRes = await request(app)
+      .post(`/api/booking-properties/${testHelper.PAGE}/${testHelper.SIZE}`)
+      .set(env.X_ACCESS_TOKEN, agencyToken)
+      .send(payload)
+    expect(forbiddenRes.statusCode).toBe(403)
   })
 })
 
