@@ -201,6 +201,18 @@ describe('GET /api/agency/:id', () => {
       .set(env.X_ACCESS_TOKEN, token)
     expect(res.statusCode).toBe(400)
 
+    const ownerToken = await testHelper.generateToken(AGENCY1_ID)
+    res = await request(app)
+      .get(`/api/agency/${AGENCY1_ID}`)
+      .set(env.X_ACCESS_TOKEN, ownerToken)
+    expect(res.statusCode).toBe(200)
+
+    // A host must not retrieve another host's private email or phone details.
+    res = await request(app)
+      .get(`/api/agency/${AGENCY2_ID}`)
+      .set(env.X_ACCESS_TOKEN, ownerToken)
+    expect(res.statusCode).toBe(403)
+
     await testHelper.signout(token)
   })
 })
