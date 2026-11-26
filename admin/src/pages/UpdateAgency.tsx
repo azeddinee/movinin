@@ -192,7 +192,6 @@ const UpdateAgency = () => {
               setPhone(_agency.phone || '')
               setLocation(_agency.location || '')
               setBio(_agency.bio || '')
-              setPayLater(_agency.payLater || false)
               setBlacklisted(!!_agency.blacklisted)
               setVisible(true)
               setLoading(false)
