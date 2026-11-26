@@ -190,6 +190,22 @@ export const signup = async (req: Request, res: Response) => {
 }
 
 /**
+ * Public Host Sign Up.
+ *
+ * Hosts use the existing Agency role until the marketplace role model is introduced.
+ * The role is assigned server-side and cannot be selected by the public request body.
+ *
+ * @export
+ * @async
+ * @param {Request} req
+ * @param {Response} res
+ * @returns {unknown}
+ */
+export const hostSignup = async (req: Request, res: Response) => {
+  await _signup(req, res, movininTypes.UserType.Agency)
+}
+
+/**
  * Admin Sign Up.
  *
  * @export
