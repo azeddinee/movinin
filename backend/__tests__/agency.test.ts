@@ -135,7 +135,7 @@ describe('PUT /api/update-agency', () => {
     const bio = 'bio1'
     const location = 'location1'
     const phone = '01010101'
-    const payLater = false
+    const payLater = true
 
     const payload: movininTypes.UpdateAgencyPayload = {
       _id: AGENCY1_ID,
