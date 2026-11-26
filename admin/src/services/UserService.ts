@@ -33,6 +33,17 @@ export const signup = (data: movininTypes.SignUpPayload): Promise<number> =>
     .then((res) => res.status)
 
 /**
+ * Public host sign up.
+ *
+ * @param {movininTypes.SignUpPayload} data
+ * @returns {Promise<number>}
+ */
+export const hostSignup = (data: movininTypes.SignUpPayload): Promise<number> =>
+  axiosInstance
+    .post('/api/host-sign-up', data)
+    .then((res) => res.status)
+
+/**
  * Check a validation token.
  *
  * @param {string} userId
