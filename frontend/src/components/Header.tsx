@@ -216,6 +216,11 @@ const Header = ({
     navigate('/saved-properties')
   }
 
+  const handleHostSignup = () => {
+    const adminHost = env.ADMIN_HOST || window.location.origin
+    window.location.href = helper.joinURL(adminHost, 'host-sign-up')
+  }
+
   const handleSignout = async () => {
     await UserService.signout(true, false)
     handleMenuClose()
@@ -467,6 +472,15 @@ const Header = ({
                     <>
                       <ListItemButton
                         onClick={() => {
+                          handleSideMenuClose()
+                          handleHostSignup()
+                        }}
+                      >
+                        <ListItemIcon><HomeIcon /></ListItemIcon>
+                        <ListItemText primary={strings.LIST_YOUR_PROPERTY} />
+                      </ListItemButton>
+                      <ListItemButton
+                        onClick={() => {
                           navigate('/sign-in')
                           handleSideMenuClose()
                         }}
@@ -499,6 +513,11 @@ const Header = ({
                 <Button variant="contained" onClick={handleLangMenuOpen} disableElevation fullWidth className="btn">
                   {/* {lang?.label} */}
                   <CircleFlag countryCode={lang?.countryCode as string} height={flagHeight} className="flag" title={lang?.label} />
+                </Button>
+              )}
+              {!hideSignin && !isSignedIn && isLoaded && (
+                <Button variant="contained" size="medium" startIcon={<HomeIcon />} onClick={handleHostSignup} disableElevation className="btn btn-auth" aria-label={strings.LIST_YOUR_PROPERTY}>
+                  <span className="btn-auth-txt">{strings.LIST_YOUR_PROPERTY}</span>
                 </Button>
               )}
               {!hideSignin && !isSignedIn && isLoaded && (
