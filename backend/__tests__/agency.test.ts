@@ -335,13 +335,40 @@ describe('DELETE /api/delete-agency/:id', () => {
     agencyId = await testHelper.createAgency(`${agencyName}@test.movinin.io`, agencyName)
     agency = await User.findById(agencyId)
     expect(agency).not.toBeNull()
-    await agency?.save()
+    const noAvatarLocationId = await testHelper.createLocation('No Avatar EN', 'No Avatar FR')
+    const noAvatarProperty = new Property({
+      name: 'Property owned by agency without avatar',
+      agency: agencyId,
+      type: movininTypes.PropertyType.Apartment,
+      description: 'Cleanup regression test',
+      image: null,
+      images: [],
+      bedrooms: 1,
+      bathrooms: 1,
+      kitchens: 1,
+      parkingSpaces: 0,
+      size: 40,
+      petsAllowed: false,
+      furnished: true,
+      aircon: false,
+      minimumAge: 18,
+      location: noAvatarLocationId,
+      address: '',
+      price: 500,
+      hidden: true,
+      cancellation: 0,
+      available: false,
+      rentalTerm: movininTypes.RentalTerm.Daily,
+    })
+    await noAvatarProperty.save()
     res = await request(app)
       .delete(`/api/delete-agency/${agencyId}`)
       .set(env.X_ACCESS_TOKEN, token)
     expect(res.statusCode).toBe(200)
     agency = await User.findById(agencyId)
     expect(agency).toBeNull()
+    expect(await Property.findById(noAvatarProperty._id)).toBeNull()
+    await testHelper.deleteLocation(noAvatarLocationId)
 
     agencyName = testHelper.getAgencyName()
     agencyId = await testHelper.createAgency(`${agencyName}@test.movinin.io`, agencyName)
