@@ -613,37 +613,63 @@ describe('POST /api/delete-temp-property-image/:image', () => {
 
 describe('GET /api/property/:id/:language', () => {
   it('only returns unpublished properties to their owner or an administrator', async () => {
-    let res = await request(app)
-      .get(`/api/property/${PROPERTY_ID}/${testHelper.LANGUAGE}`)
-    expect(res.statusCode).toBe(404)
+    const privateProperty = new Property({
+      name: 'Private host draft',
+      agency: AGENCY1_ID,
+      type: movininTypes.PropertyType.House,
+      description: '<p>Private draft</p>',
+      bedrooms: 1,
+      bathrooms: 1,
+      kitchens: 1,
+      parkingSpaces: 0,
+      petsAllowed: false,
+      furnished: false,
+      minimumAge: 21,
+      location: LOCATION1_ID,
+      price: 1000,
+      hidden: true,
+      cancellation: 0,
+      available: true,
+      rentalTerm: movininTypes.RentalTerm.Daily,
+    })
+    await privateProperty.save()
+    const privatePropertyId = privateProperty._id.toString()
 
-    const adminToken = await testHelper.signinAsAdmin()
-    res = await request(app)
-      .get(`/api/property/${PROPERTY_ID}/${testHelper.LANGUAGE}`)
-      .set(env.X_ACCESS_TOKEN, adminToken)
-    expect(res.statusCode).toBe(200)
-    expect(res.body.name).toBe('Beautiful House in Detroit')
-    await testHelper.signout(adminToken)
+    try {
+      let res = await request(app)
+        .get(`/api/property/${privatePropertyId}/${testHelper.LANGUAGE}`)
+      expect(res.statusCode).toBe(404)
 
-    const ownerToken = await testHelper.generateToken(AGENCY1_ID)
-    res = await request(app)
-      .get(`/api/property/${PROPERTY_ID}/${testHelper.LANGUAGE}`)
-      .set(env.X_ACCESS_TOKEN, ownerToken)
-    expect(res.statusCode).toBe(200)
+      const adminToken = await testHelper.signinAsAdmin()
+      res = await request(app)
+        .get(`/api/property/${privatePropertyId}/${testHelper.LANGUAGE}`)
+        .set(env.X_ACCESS_TOKEN, adminToken)
+      expect(res.statusCode).toBe(200)
+      expect(res.body.name).toBe('Private host draft')
+      await testHelper.signout(adminToken)
 
-    const otherOwnerToken = await testHelper.generateToken(AGENCY2_ID)
-    res = await request(app)
-      .get(`/api/property/${PROPERTY_ID}/${testHelper.LANGUAGE}`)
-      .set(env.X_ACCESS_TOKEN, otherOwnerToken)
-    expect(res.statusCode).toBe(404)
+      const ownerToken = await testHelper.generateToken(AGENCY1_ID)
+      res = await request(app)
+        .get(`/api/property/${privatePropertyId}/${testHelper.LANGUAGE}`)
+        .set(env.X_ACCESS_TOKEN, ownerToken)
+      expect(res.statusCode).toBe(200)
 
-    res = await request(app)
+      const otherOwnerToken = await testHelper.generateToken(AGENCY2_ID)
+      res = await request(app)
+        .get(`/api/property/${privatePropertyId}/${testHelper.LANGUAGE}`)
+        .set(env.X_ACCESS_TOKEN, otherOwnerToken)
+      expect(res.statusCode).toBe(404)
+    } finally {
+      await privateProperty.deleteOne()
+    }
+
+    const missingRes = await request(app)
       .get(`/api/property/${testHelper.GetRandromObjectIdAsString()}/${testHelper.LANGUAGE}`)
-    expect(res.statusCode).toBe(204)
+    expect(missingRes.statusCode).toBe(204)
 
-    res = await request(app)
+    const invalidRes = await request(app)
       .get(`/api/property/0/${testHelper.LANGUAGE}`)
-    expect(res.statusCode).toBe(400)
+    expect(invalidRes.statusCode).toBe(400)
   })
 })
 
