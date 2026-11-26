@@ -8,6 +8,7 @@ import rateLimiter, { createRateLimiter } from '../middlewares/rateLimiter'
 const routes = express.Router()
 
 routes.route(routeNames.signup).post(rateLimiter, userController.signup)
+routes.route(routeNames.hostSignup).post(rateLimiter, userController.hostSignup)
 // adminSignup route is replaced by src/setup/setup.ts and src/setup/reset.ts
 // routes.route(routeNames.adminSignup).post(userController.adminSignup)
 routes.route(routeNames.create).post(authJwt.verifyToken, authJwt.authAgency, userController.create)
