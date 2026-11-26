@@ -1812,6 +1812,77 @@ describe('Security Regression Tests - Issue #124 Equivalent', () => {
     await Booking.deleteOne({ _id: res.body._id })
   })
 
+  it('should prevent hosts from bypassing online payment by marking bookings as paid or confirmed', async () => {
+    const propertyA = new Property({
+      name: 'Online-only host property',
+      agency: agencyAId,
+      type: movininTypes.PropertyType.Apartment,
+      description: 'Online-only payment regression test',
+      image: 'apartment.jpg',
+      images: [],
+      bedrooms: 1,
+      bathrooms: 1,
+      kitchens: 1,
+      parkingSpaces: 0,
+      size: 50,
+      petsAllowed: false,
+      furnished: true,
+      aircon: false,
+      minimumAge: 18,
+      location: LOCATION_ID,
+      price: 500,
+      cancellation: 0,
+      available: true,
+      rentalTerm: movininTypes.RentalTerm.Daily,
+    })
+    await propertyA.save()
+
+    const payload: movininTypes.Booking = {
+      agency: agencyAId,
+      property: propertyA._id.toString(),
+      renter: RENTER1_ID,
+      location: LOCATION_ID,
+      from: new Date(2027, 4, 1),
+      to: new Date(2027, 4, 3),
+      status: movininTypes.BookingStatus.Paid,
+      cancellation: false,
+      price: 1000,
+    }
+
+    try {
+      // A host cannot create a booking that claims payment or confirmation.
+      let res = await request(app)
+        .post('/api/create-booking')
+        .set(env.X_ACCESS_TOKEN, agencyAToken)
+        .send(payload)
+      expect(res.statusCode).toBe(403)
+
+      const pendingBooking = new Booking({ ...payload, status: movininTypes.BookingStatus.Pending })
+      await pendingBooking.save()
+      payload._id = pendingBooking._id.toString()
+
+      // A host cannot change an existing booking to a paid state.
+      res = await request(app)
+        .put('/api/update-booking')
+        .set(env.X_ACCESS_TOKEN, agencyAToken)
+        .send(payload)
+      expect(res.statusCode).toBe(403)
+
+      // Bulk status changes must enforce the same online-only rule.
+      res = await request(app)
+        .post('/api/update-booking-status')
+        .set(env.X_ACCESS_TOKEN, agencyAToken)
+        .send({ ids: [pendingBooking._id.toString()], status: movininTypes.BookingStatus.Reserved })
+      expect(res.statusCode).toBe(403)
+
+      const unchangedBooking = await Booking.findById(pendingBooking._id)
+      expect(unchangedBooking?.status).toBe(movininTypes.BookingStatus.Pending)
+    } finally {
+      await Booking.deleteMany({ property: propertyA._id })
+      await propertyA.deleteOne()
+    }
+  })
+
   it("should prevent Agency A from moving a booking onto Agency B's property or into Agency B's account", async () => {
     const propertyB = await Property.findOne({ agency: agencyBId })
     expect(propertyB).not.toBeNull()
@@ -1884,6 +1955,7 @@ describe('Security Regression Tests - Issue #124 Equivalent', () => {
       // Updating own booking on own property succeeds and forces agency to agencyAId
       payload.property = propertyA._id.toString()
       payload.agency = agencyBId // spoofed agency ID is overridden
+      payload.status = movininTypes.BookingStatus.Pending
       res = await request(app)
         .put('/api/update-booking')
         .set(env.X_ACCESS_TOKEN, agencyAToken)
@@ -1891,6 +1963,7 @@ describe('Security Regression Tests - Issue #124 Equivalent', () => {
       expect(res.statusCode).toBe(200)
       expect(res.body.agency).toBe(agencyAId)
       expect(res.body.property).toBe(propertyA._id.toString())
+      expect(res.body.status).toBe(movininTypes.BookingStatus.Pending)
     } finally {
       await Booking.deleteOne({ _id: bookingA._id })
       await propertyA.deleteOne()
