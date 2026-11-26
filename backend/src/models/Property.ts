@@ -12,9 +12,12 @@ const propertySchema = new Schema<env.Property>(
       type: String,
       enum: [
         movininTypes.PropertyType.House,
+        movininTypes.PropertyType.Hotel,
         movininTypes.PropertyType.Apartment,
         movininTypes.PropertyType.Townhouse,
         movininTypes.PropertyType.Plot,
+        movininTypes.PropertyType.Riad,
+        movininTypes.PropertyType.Villa,
         movininTypes.PropertyType.Farm,
         movininTypes.PropertyType.Commercial,
         movininTypes.PropertyType.Industrial,
