@@ -164,25 +164,26 @@ export const deleteAgency = async (req: Request, res: Response) => {
         if (await helper.pathExists(avatar)) {
           await asyncFs.unlink(avatar)
         }
+      }
 
-        await NotificationCounter.deleteMany({ user: id })
-        await Notification.deleteMany({ user: id })
-        await Booking.deleteMany({ agency: id })
-        const properties = await Property.find({ agency: id })
-        await Property.deleteMany({ agency: id })
-        for (const property of properties) {
-          if (property.image) {
-            const image = path.join(env.CDN_PROPERTIES, property.image)
-            if (await helper.pathExists(image)) {
-              await asyncFs.unlink(image)
-            }
+      // Account data must be cleaned up regardless of whether the agency uploaded an avatar.
+      await NotificationCounter.deleteMany({ user: id })
+      await Notification.deleteMany({ user: id })
+      await Booking.deleteMany({ agency: id })
+      const properties = await Property.find({ agency: id })
+      await Property.deleteMany({ agency: id })
+      for (const property of properties) {
+        if (property.image) {
+          const image = path.join(env.CDN_PROPERTIES, property.image)
+          if (await helper.pathExists(image)) {
+            await asyncFs.unlink(image)
           }
-          if (property.images) {
-            for (const imageFile of property.images) {
-              const additionalImage = path.join(env.CDN_PROPERTIES, imageFile)
-              if (await helper.pathExists(additionalImage)) {
-                await asyncFs.unlink(additionalImage)
-              }
+        }
+        if (property.images) {
+          for (const imageFile of property.images) {
+            const additionalImage = path.join(env.CDN_PROPERTIES, imageFile)
+            if (await helper.pathExists(additionalImage)) {
+              await asyncFs.unlink(additionalImage)
             }
           }
         }
