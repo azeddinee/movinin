@@ -81,7 +81,7 @@ const router = createBrowserRouter([
       { path: '/activate', element: <Activate /> },
       { path: '/forgot-password', element: <ForgotPassword /> },
       { path: '/reset-password', element: <ResetPassword /> },
-      // { path: '/sign-up', element: <SignUp /> },
+      { path: '/host-sign-up', element: <SignUp /> },
       { path: '/agencies', element: <Agencies /> },
       { path: '/agency', element: <Agency /> },
       { path: '/create-agency', element: <CreateAgency /> },
