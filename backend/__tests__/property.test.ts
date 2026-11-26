@@ -612,11 +612,30 @@ describe('POST /api/delete-temp-property-image/:image', () => {
 })
 
 describe('GET /api/property/:id/:language', () => {
-  it('should return a property', async () => {
+  it('only returns unpublished properties to their owner or an administrator', async () => {
     let res = await request(app)
       .get(`/api/property/${PROPERTY_ID}/${testHelper.LANGUAGE}`)
+    expect(res.statusCode).toBe(404)
+
+    const adminToken = await testHelper.signinAsAdmin()
+    res = await request(app)
+      .get(`/api/property/${PROPERTY_ID}/${testHelper.LANGUAGE}`)
+      .set(env.X_ACCESS_TOKEN, adminToken)
     expect(res.statusCode).toBe(200)
-    expect(res.body.name).toBe('Beautiful Townhouse in Detroit')
+    expect(res.body.name).toBe('Beautiful House in Detroit')
+    await testHelper.signout(adminToken)
+
+    const ownerToken = await testHelper.generateToken(AGENCY1_ID)
+    res = await request(app)
+      .get(`/api/property/${PROPERTY_ID}/${testHelper.LANGUAGE}`)
+      .set(env.X_ACCESS_TOKEN, ownerToken)
+    expect(res.statusCode).toBe(200)
+
+    const otherOwnerToken = await testHelper.generateToken(AGENCY2_ID)
+    res = await request(app)
+      .get(`/api/property/${PROPERTY_ID}/${testHelper.LANGUAGE}`)
+      .set(env.X_ACCESS_TOKEN, otherOwnerToken)
+    expect(res.statusCode).toBe(404)
 
     res = await request(app)
       .get(`/api/property/${testHelper.GetRandromObjectIdAsString()}/${testHelper.LANGUAGE}`)
