@@ -429,7 +429,25 @@ export const checkProperty = async (req: Request, res: Response) => {
   const { id } = req.params as { id: string }
 
   try {
+    if (!helper.isValidObjectId(id)) {
+      res.status(400).send('Invalid property ID')
+      return
+    }
+
     const _id = new mongoose.Types.ObjectId(id)
+    const property = await Property.findById(_id)
+    if (!property) {
+      res.sendStatus(204)
+      return
+    }
+
+    const sessionUserId = req.user?._id
+    const sessionUser = sessionUserId ? await User.findById(sessionUserId) : null
+    if (!sessionUser || (sessionUser.type === movininTypes.UserType.Agency && property.agency?.toString() !== sessionUserId)) {
+      res.status(403).send('Forbidden: You cannot inspect another host\'s property')
+      return
+    }
+
     const count = await Booking
       .find({ property: _id })
       .limit(1)
