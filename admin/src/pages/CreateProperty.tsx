@@ -590,19 +590,26 @@ const CreateProperty = () => {
               />
             </FormControl>
 
-            <FormControl fullWidth margin="dense" className="checkbox-fc">
-              <FormControlLabel
-                label={strings.HIDDEN}
-                control={(
-                  <Switch
-                    checked={hidden}
-                    onChange={handleHiddenChange}
-                    color="primary"
-                  />
-                )}
-                className="checkbox-fcl"
-              />
-            </FormControl>
+            {!isAgency && (
+              <FormControl fullWidth margin="dense" className="checkbox-fc">
+                <FormControlLabel
+                  label={strings.HIDDEN}
+                  control={(
+                    <Switch
+                      checked={hidden}
+                      onChange={handleHiddenChange}
+                      color="primary"
+                    />
+                  )}
+                  className="checkbox-fcl"
+                />
+              </FormControl>
+            )}
+            {isAgency && (
+              <FormControl fullWidth margin="dense">
+                <FormHelperText>{strings.PENDING_REVIEW}</FormHelperText>
+              </FormControl>
+            )}
 
             <div className="buttons">
               <Button type="submit" variant="contained" className="btn-primary btn-margin-bottom" size="small">
