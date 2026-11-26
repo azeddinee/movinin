@@ -1776,11 +1776,14 @@ export const getUsers = async (req: Request, res: Response) => {
     const size: number = Number.parseInt(req.params.size as string, 10)
     const { body }: { body: movininTypes.GetUsersBody } = req
     const { types, user: userId } = body
+    const allowedTypes = sessionUser.type === movininTypes.UserType.Agency
+      ? [movininTypes.UserType.User]
+      : types
 
     const $match: mongoose.QueryFilter<env.User> = {
       $and: [
         {
-          type: { $in: types },
+          type: { $in: allowedTypes },
         },
         {
           $or: [
@@ -1792,6 +1795,10 @@ export const getUsers = async (req: Request, res: Response) => {
           expireAt: null,
         },
       ],
+    }
+
+    if (sessionUser.type === movininTypes.UserType.Agency) {
+      $match.$and!.push({ agency: sessionUser._id })
     }
 
     if (userId) {
