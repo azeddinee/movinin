@@ -1333,10 +1333,29 @@ export const hasBookings = async (req: Request, res: Response) => {
   const { renter } = req.params as { renter: string }
 
   try {
+    const sessionUser = req.user
+    if (!sessionUser || !helper.isValidObjectId(sessionUser._id)) {
+      res.status(401).send({ message: 'Unauthorized!' })
+      return
+    }
+
+    if (!helper.isValidObjectId(renter)) {
+      res.status(400).send(i18n.t('ERROR') + ' Invalid renter ID')
+      return
+    }
+
+    // Only the renter themselves or an administrator may check booking existence.
+    if (
+      sessionUser.type !== movininTypes.UserType.Admin
+      && (sessionUser.type !== movininTypes.UserType.User || sessionUser._id !== renter)
+    ) {
+      logger.error(`[booking.hasBookings] Forbidden booking-existence check for renter ${renter} by user ${sessionUser._id}`)
+      res.status(403).send('Forbidden: You cannot check another renter\'s bookings')
+      return
+    }
+
     const count = await Booking
-      .find({
-        renter: new mongoose.Types.ObjectId(renter),
-      })
+      .find({ renter: new mongoose.Types.ObjectId(renter) })
       .limit(1)
       .countDocuments()
 
