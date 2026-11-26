@@ -132,6 +132,10 @@ export const create = async (req: Request, res: Response) => {
         return
       }
       body.agency = sessionUser._id.toString()
+      if (BOOKING_RESERVATION_STATUSES.includes(body.status)) {
+        res.status(403).send('Forbidden: Hosts cannot mark bookings as paid or confirmed')
+        return
+      }
     } else if (body.agency && body.agency.toString() !== property.agency?.toString()) {
       res.status(400).send(i18n.t('ERROR') + 'Invalid agency')
       return
@@ -814,6 +818,10 @@ export const update = async (req: Request, res: Response) => {
           return
         }
         body.agency = sessionUser._id.toString()
+        if (BOOKING_RESERVATION_STATUSES.includes(body.status)) {
+          res.status(403).send('Forbidden: Hosts cannot mark bookings as paid or confirmed')
+          return
+        }
       } else if (body.agency && body.agency.toString() !== targetProperty.agency?.toString()) {
         res.status(400).send(i18n.t('ERROR') + 'Invalid agency')
         return
@@ -885,6 +893,11 @@ export const updateStatus = async (req: Request, res: Response) => {
     if (!sessionUser || sessionUser.type === movininTypes.UserType.User) {
       logger.error(`[booking.updateStatus] Unauthorized attempt to update status by user ${sessionUserId}`)
       res.status(403).send('Forbidden: You cannot update booking status')
+      return
+    }
+
+    if (sessionUser.type === movininTypes.UserType.Agency && BOOKING_RESERVATION_STATUSES.includes(status)) {
+      res.status(403).send('Forbidden: Hosts cannot mark bookings as paid or confirmed')
       return
     }
 
