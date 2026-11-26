@@ -1471,6 +1471,34 @@ describe('GET /api/has-bookings/:renter', () => {
       .set(env.X_ACCESS_TOKEN, token)
     expect(res.statusCode).toBe(400)
 
+    // A renter may check their own booking existence.
+    res = await request(app)
+      .get(`/api/has-bookings/${RENTER1_ID}`)
+      .set(env.X_ACCESS_TOKEN, RENTER1_TOKEN)
+    expect(res.statusCode).toBe(200)
+
+    // Another renter must not be able to probe whether this account has bookings.
+    const unrelatedRenter = new User({
+      fullName: 'Unrelated Renter',
+      email: testHelper.GetRandomEmail(),
+      language: testHelper.LANGUAGE,
+      type: movininTypes.UserType.User,
+    })
+    await unrelatedRenter.save()
+    const unrelatedToken = await testHelper.generateToken(unrelatedRenter._id.toString())
+    res = await request(app)
+      .get(`/api/has-bookings/${RENTER1_ID}`)
+      .set(env.X_ACCESS_TOKEN, unrelatedToken)
+    expect(res.statusCode).toBe(403)
+    await unrelatedRenter.deleteOne()
+
+    // Hosts may not probe a renter's booking history through this endpoint.
+    const agencyToken = await testHelper.generateToken(AGENCY_ID)
+    res = await request(app)
+      .get(`/api/has-bookings/${RENTER1_ID}`)
+      .set(env.X_ACCESS_TOKEN, agencyToken)
+    expect(res.statusCode).toBe(403)
+
     await testHelper.signout(token)
   })
 })
