@@ -666,19 +666,26 @@ const UpdateProperty = () => {
                 />
               </FormControl>
 
-              <FormControl fullWidth margin="dense" className="checkbox-fc">
-                <FormControlLabel
-                  label={strings.HIDDEN}
-                  control={(
-                    <Switch
-                      checked={hidden}
-                      onChange={handleHiddenChange}
-                      color="primary"
-                    />
-                  )}
-                  className="checkbox-fcl"
-                />
-              </FormControl>
+              {admin && (
+                <FormControl fullWidth margin="dense" className="checkbox-fc">
+                  <FormControlLabel
+                    label={strings.HIDDEN}
+                    control={(
+                      <Switch
+                        checked={hidden}
+                        onChange={handleHiddenChange}
+                        color="primary"
+                      />
+                    )}
+                    className="checkbox-fcl"
+                  />
+                </FormControl>
+              )}
+              {!admin && property.hidden && (
+                <FormControl fullWidth margin="dense">
+                  <FormHelperText>{strings.PENDING_REVIEW}</FormHelperText>
+                </FormControl>
+              )}
 
               <div className="buttons">
                 <Button type="submit" variant="contained" className="btn-primary btn-margin-bottom" size="small">
