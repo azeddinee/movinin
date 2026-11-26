@@ -2023,6 +2023,41 @@ describe('POST /api/users/:page/:size', () => {
   })
 })
 
+  it('limits an agency user directory to its own customers', async () => {
+    const agencyName = testHelper.getAgencyName()
+    const agencyId = await testHelper.createAgency(`${agencyName}@test.movinin.io`, agencyName)
+    const customer = new User({
+      fullName: 'Agency Customer',
+      email: testHelper.GetRandomEmail(),
+      language: testHelper.LANGUAGE,
+      type: movininTypes.UserType.User,
+      agency: agencyId,
+    })
+    await customer.save()
+
+    try {
+      const agencyToken = await testHelper.generateToken(agencyId)
+      const payload: movininTypes.GetUsersBody = {
+        user: '',
+        types: [movininTypes.UserType.Admin, movininTypes.UserType.Agency, movininTypes.UserType.User],
+      }
+      const response = await request(app)
+        .post(`/api/users/${testHelper.PAGE}/${testHelper.SIZE}`)
+        .set(env.X_ACCESS_TOKEN, agencyToken)
+        .send(payload)
+
+      expect(response.statusCode).toBe(200)
+      const returnedUsers = response.body[0].resultData
+      expect(returnedUsers).toHaveLength(1)
+      expect(returnedUsers[0]._id).toBe(customer._id.toString())
+      expect(returnedUsers[0].type).toBe(movininTypes.UserType.User)
+    } finally {
+      await customer.deleteOne()
+      await testHelper.deleteAgency(agencyId)
+    }
+  })
+})
+
 describe('GET /api/has-password/:id', () => {
   it('should get users', async () => {
     const token = await testHelper.signinAsAdmin()
