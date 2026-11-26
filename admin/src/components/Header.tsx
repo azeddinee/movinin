@@ -58,6 +58,7 @@ const Header = ({
 
   const { user } = useUserContext() as UserContextType
   const { notificationCount } = useNotificationContext() as NotificationContextType
+  const isAdmin = user?.type === movininTypes.UserType.Admin
 
   const [lang, setLang] = useState(helper.getLanguage(env.DEFAULT_LANGUAGE))
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
@@ -298,6 +299,7 @@ const Header = ({
                   <ListItemIcon><SchedulerIcon /></ListItemIcon>
                   <ListItemText primary={strings.SCHEDULER} />
                 </ListItem>
+                {isAdmin && (
                 <ListItem
                   onClick={() => {
                     navigate('/agencies')
@@ -307,6 +309,8 @@ const Header = ({
                   <ListItemIcon><AgenciesIcon /></ListItemIcon>
                   <ListItemText primary={strings.AGENCIES} />
                 </ListItem>
+                )}
+                {isAdmin && (
                 <ListItem
                   onClick={() => {
                     navigate('/countries')
@@ -316,6 +320,8 @@ const Header = ({
                   <ListItemIcon><CountriesIcon /></ListItemIcon>
                   <ListItemText primary={strings.COUNTRIES} />
                 </ListItem>
+                )}
+                {isAdmin && (
                 <ListItem
                   onClick={() => {
                     navigate('/locations')
@@ -325,6 +331,7 @@ const Header = ({
                   <ListItemIcon><LocationsIcon /></ListItemIcon>
                   <ListItemText primary={strings.LOCATIONS} />
                 </ListItem>
+                )}
                 <ListItem
                   onClick={() => {
                     navigate('/properties')
@@ -334,6 +341,7 @@ const Header = ({
                   <ListItemIcon><PropertiesIcon /></ListItemIcon>
                   <ListItemText primary={strings.PROPERTIES} />
                 </ListItem>
+                {isAdmin && (
                 <ListItem
                   onClick={() => {
                     navigate('/users')
@@ -343,6 +351,7 @@ const Header = ({
                   <ListItemIcon><UsersIcon /></ListItemIcon>
                   <ListItemText primary={strings.USERS} />
                 </ListItem>
+                )}
                 <ListItem
                   onClick={() => {
                     navigate('about/')
