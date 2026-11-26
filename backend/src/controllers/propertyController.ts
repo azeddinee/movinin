@@ -38,6 +38,8 @@ export const create = async (req: Request, res: Response) => {
 
     if (sessionUser.type === movininTypes.UserType.Agency) {
       body.agency = sessionUser._id.toString()
+      // New marketplace listings must be reviewed by an administrator before publication.
+      body.hidden = true
     }
 
     const {
@@ -303,7 +305,8 @@ export const update = async (req: Request, res: Response) => {
       property.latitude = latitude
       property.longitude = longitude
       property.price = price
-      property.hidden = hidden
+      // Hosts cannot publish or unhide listings themselves; administrator approval is required.
+      property.hidden = sessionUser.type === movininTypes.UserType.Agency ? true : hidden
       property.cancellation = cancellation
       property.aircon = aircon
       property.rentalTerm = rentalTerm as movininTypes.RentalTerm
@@ -690,7 +693,16 @@ export const getProperties = async (req: Request, res: Response) => {
     const { body }: { body: movininTypes.GetPropertiesPayload } = req
     const page = Number.parseInt(req.params.page as string, 10)
     const size = Number.parseInt(req.params.size as string, 10)
-    const agencies = body.agencies.map((id) => new mongoose.Types.ObjectId(id))
+    let agencies = body.agencies.map((id) => new mongoose.Types.ObjectId(id))
+    const sessionUserId = req.user?._id
+    const sessionUser = sessionUserId ? await User.findById(sessionUserId) : null
+    if (!sessionUser || (sessionUser.type !== movininTypes.UserType.Admin && sessionUser.type !== movininTypes.UserType.Agency)) {
+      res.status(403).send('Forbidden: You cannot get property information')
+      return
+    }
+    if (sessionUser.type === movininTypes.UserType.Agency) {
+      agencies = [sessionUser._id]
+    }
     const keyword = escapeStringRegexp(String(req.query.s || ''))
     const types = body.types || []
     const rentalTerms = body.rentalTerms || []
@@ -822,7 +834,24 @@ export const getProperties = async (req: Request, res: Response) => {
 export const getBookingProperties = async (req: Request, res: Response) => {
   try {
     const { body }: { body: movininTypes.GetBookingPropertiesPayload } = req
-    const agency = new mongoose.Types.ObjectId(body.agency)
+    const sessionUserId = req.user?._id
+    const sessionUser = sessionUserId ? await User.findById(sessionUserId) : null
+    if (!sessionUser || (sessionUser.type !== movininTypes.UserType.Admin && sessionUser.type !== movininTypes.UserType.Agency)) {
+      res.status(403).send('Forbidden: You cannot get booking properties')
+      return
+    }
+    const requestedAgency = typeof body.agency === 'string' && helper.isValidObjectId(body.agency)
+      ? new mongoose.Types.ObjectId(body.agency)
+      : null
+    if (!requestedAgency) {
+      res.status(400).send('Invalid agency')
+      return
+    }
+    if (sessionUser.type === movininTypes.UserType.Agency && !requestedAgency.equals(sessionUser._id)) {
+      res.status(403).send('Forbidden: You cannot access another host\'s properties')
+      return
+    }
+    const agency = sessionUser.type === movininTypes.UserType.Agency ? sessionUser._id : requestedAgency
     const location = new mongoose.Types.ObjectId(body.location)
     const keyword = escapeStringRegexp(String(req.query.s || ''))
     const options = 'i'
