@@ -13,10 +13,13 @@ export enum PropertyType {
   Apartment = 'APARTMENT',
   Commercial = 'COMMERCIAL',
   Farm = 'FARM',
+  Hotel = 'HOTEL',
   House = 'HOUSE',
   Industrial = 'INDUSTRIAL',
   Plot = 'PLOT',
+  Riad = 'RIAD',
   Townhouse = 'TOWNHOUSE',
+  Villa = 'VILLA',
 }
 
 export enum BookingStatus {
