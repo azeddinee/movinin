@@ -375,6 +375,7 @@ const Header = ({
           </>
           <div style={classes.grow} />
           <div className="header-desktop">
+            {!isSignedIn && <Button variant="contained" size="small" className="btn-primary" onClick={() => navigate('/host-sign-up')}>List your property</Button>}
             {isSignedIn && (
               <IconButton aria-label="" color="inherit" onClick={handleNotificationsClick}>
                 <Badge badgeContent={notificationCount > 0 ? notificationCount : null} color="error">
@@ -392,6 +393,7 @@ const Header = ({
             )}
           </div>
           <div className="header-mobile">
+            {!isSignedIn && <Button variant="contained" size="small" className="btn-primary" onClick={() => navigate('/host-sign-up')}>List your property</Button>}
             {!isSignedIn && (
               <Button variant="contained" startIcon={<LanguageIcon />} onClick={handleLangMenuOpen} disableElevation fullWidth className="btn-primary">
                 {lang?.label}
