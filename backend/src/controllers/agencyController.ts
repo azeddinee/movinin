@@ -105,7 +105,7 @@ export const update = async (req: Request, res: Response) => {
       agency.phone = phone
       agency.location = location
       agency.bio = bio
-      agency.payLater = payLater
+      agency.payLater = false
       if (isAdmin) {
         agency.blacklisted = !!blacklisted
       }
