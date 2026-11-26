@@ -62,14 +62,23 @@ export const getPropertyType = (type: string) => {
     case movininTypes.PropertyType.House:
       return strings.HOUSE
 
+    case movininTypes.PropertyType.Hotel:
+      return strings.HOTEL
+
     case movininTypes.PropertyType.Industrial:
       return strings.INDUSTRIAL
 
     case movininTypes.PropertyType.Plot:
       return strings.PLOT
 
+    case movininTypes.PropertyType.Riad:
+      return strings.RIAD
+
     case movininTypes.PropertyType.Townhouse:
       return strings.TOWN_HOUSE
+
+    case movininTypes.PropertyType.Villa:
+      return strings.VILLA
     default:
       return ''
   }
