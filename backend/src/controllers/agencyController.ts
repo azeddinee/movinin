@@ -98,7 +98,6 @@ export const update = async (req: Request, res: Response) => {
         phone,
         location,
         bio,
-        payLater,
         blacklisted,
       } = body
       agency.fullName = fullName
