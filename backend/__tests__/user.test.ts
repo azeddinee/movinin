@@ -192,14 +192,14 @@ describe('POST /api/sign-up', () => {
 describe('POST /api/host-sign-up', () => {
   it('creates a host account with the Agency role and online-only payments', async () => {
     const email = testHelper.GetRandomEmail()
-    const payload: movininTypes.SignUpPayload = {
+    const payload = {
       email,
       password: USER1_PASSWORD,
       fullName: 'Marketplace Host',
       language: testHelper.LANGUAGE,
       type: movininTypes.UserType.Admin,
       payLater: true,
-    } as movininTypes.SignUpPayload
+    }
 
     const response = await request(app)
       .post('/api/host-sign-up')
