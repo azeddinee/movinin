@@ -4,6 +4,7 @@
   const strings = new LocalizedStrings({
     fr: {
       SIGN_IN: 'Se connecter',
+      LIST_YOUR_PROPERTY: 'Proposer un logement',
       HOME: 'Accueil',
       BOOKINGS: 'Réservations',
       ABOUT: 'À propos',
@@ -20,6 +21,7 @@
     },
     en: {
       SIGN_IN: 'Sign in',
+      LIST_YOUR_PROPERTY: 'List your property',
       HOME: 'Home',
       BOOKINGS: 'Bookings',
       ABOUT: 'About',
@@ -36,6 +38,7 @@
     },
     de: {
       SIGN_IN: 'Anmelden',
+      LIST_YOUR_PROPERTY: 'Unterkunft anbieten',
       HOME: 'Startseite',
       BOOKINGS: 'Buchungen',
       ABOUT: 'Über uns',
@@ -52,6 +55,7 @@
     },
     es: {
       SIGN_IN: 'Iniciar sesión',
+      LIST_YOUR_PROPERTY: 'Publicar tu alojamiento',
       HOME: 'Inicio',
       BOOKINGS: 'Reservas',
       ABOUT: 'Acerca de',
@@ -68,6 +72,7 @@
     },
     pt: {
       SIGN_IN: 'Iniciar sessão',
+      LIST_YOUR_PROPERTY: 'Anuncie o seu alojamento',
       HOME: 'Início',
       BOOKINGS: 'Reservas',
       ABOUT: 'Sobre',
@@ -84,6 +89,7 @@
     },
     it: {
       SIGN_IN: 'Accedi',
+      LIST_YOUR_PROPERTY: 'Pubblica il tuo alloggio',
       HOME: 'Home',
       BOOKINGS: 'Prenotazioni',
       ABOUT: 'Chi siamo',
@@ -100,6 +106,7 @@
     },
     zh: {
       SIGN_IN: '登录',
+      LIST_YOUR_PROPERTY: '发布您的房源',
       HOME: '首页',
       BOOKINGS: '预订',
       ABOUT: '关于我们',
@@ -116,6 +123,7 @@
     },
     ja: {
       SIGN_IN: 'ログイン',
+      LIST_YOUR_PROPERTY: '宿泊施設を掲載',
       HOME: 'ホーム',
       BOOKINGS: '予約',
       ABOUT: '会社概要',
