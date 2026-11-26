@@ -1197,17 +1197,17 @@ export const update = async (req: Request, res: Response) => {
     if (typeof enableEmailNotifications !== 'undefined') {
       user.enableEmailNotifications = enableEmailNotifications
     }
-    if (typeof payLater !== 'undefined' || user.type === movininTypes.UserType.Agency) {
-      user.payLater = user.type === movininTypes.UserType.Agency ? false : !!payLater
+    if (sessionUser.type === movininTypes.UserType.Admin && type) {
+      user.type = type as movininTypes.UserType
+    }
+    if (user.type === movininTypes.UserType.Agency) {
+      user.payLater = false
+    } else if (typeof payLater !== 'undefined') {
+      user.payLater = payLater
     }
     if (sessionUser.type === movininTypes.UserType.Admin || isAuthorizedAgencyUser) {
       if (typeof blacklisted !== 'undefined') {
         user.blacklisted = blacklisted
-      }
-    }
-    if (sessionUser.type === movininTypes.UserType.Admin) {
-      if (type) {
-        user.type = type as movininTypes.UserType
       }
     }
 
