@@ -652,6 +652,18 @@ export const getProperty = async (req: Request, res: Response) => {
       .lean()
 
     if (property) {
+      if (property.hidden) {
+        const sessionUserId = req.user?._id
+        const sessionUser = sessionUserId ? await User.findById(sessionUserId) : null
+        const isAdmin = sessionUser?.type === movininTypes.UserType.Admin
+        const isOwner = sessionUser?.type === movininTypes.UserType.Agency
+          && property.agency._id.toString() === sessionUserId
+        if (!isAdmin && !isOwner) {
+          res.sendStatus(404)
+          return
+        }
+      }
+
       const {
         _id,
         fullName,
