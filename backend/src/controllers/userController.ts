@@ -286,6 +286,9 @@ export const create = async (req: Request, res: Response) => {
     }
 
     const user = new User(body)
+    if (user.type === movininTypes.UserType.Agency) {
+      user.payLater = false
+    }
     await user.save()
 
     // avatar
