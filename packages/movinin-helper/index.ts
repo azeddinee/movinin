@@ -285,9 +285,12 @@ export const getAllPropertyTypes = () =>
     movininTypes.PropertyType.Commercial,
     movininTypes.PropertyType.Farm,
     movininTypes.PropertyType.House,
+    movininTypes.PropertyType.Hotel,
     movininTypes.PropertyType.Industrial,
     movininTypes.PropertyType.Plot,
-    movininTypes.PropertyType.Townhouse
+    movininTypes.PropertyType.Riad,
+    movininTypes.PropertyType.Townhouse,
+    movininTypes.PropertyType.Villa
   ]
 
 /**
