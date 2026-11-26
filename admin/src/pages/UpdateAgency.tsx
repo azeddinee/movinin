@@ -46,7 +46,6 @@ const UpdateAgency = () => {
   const [avatarError, setAvatarError] = useState(false)
   const [email, setEmail] = useState('')
   const [phoneValid, setPhoneValid] = useState(true)
-  const [payLater, setPayLater] = useState(true)
   const [blacklisted, setBlacklisted] = useState(false)
 
   const handleFullNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -250,7 +249,7 @@ const UpdateAgency = () => {
         phone,
         location,
         bio,
-        payLater,
+        payLater: false,
       }
 
       if (isAdmin) {
@@ -326,20 +325,6 @@ const UpdateAgency = () => {
                 />
               </FormControl>
 
-              <FormControl component="fieldset" style={{ marginTop: 15 }}>
-                <FormControlLabel
-                  control={(
-                    <Switch
-                      checked={payLater}
-                      onChange={(e) => {
-                        setPayLater(e.target.checked)
-                      }}
-                      color="primary"
-                    />
-                  )}
-                  label={commonStrings.PAY_LATER}
-                />
-              </FormControl>
 
               <div className="info">
                 <InfoIcon />
