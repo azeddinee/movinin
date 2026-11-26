@@ -49,12 +49,15 @@ const PropertyTypeList = ({
         fullWidth
       >
         <MenuItem value={movininTypes.PropertyType.House}>{strings.HOUSE}</MenuItem>
+        <MenuItem value={movininTypes.PropertyType.Hotel}>{strings.HOTEL}</MenuItem>
         <MenuItem value={movininTypes.PropertyType.Apartment}>{strings.APARTMENT}</MenuItem>
         <MenuItem value={movininTypes.PropertyType.Plot}>{strings.PLOT}</MenuItem>
+        <MenuItem value={movininTypes.PropertyType.Riad}>{strings.RIAD}</MenuItem>
         <MenuItem value={movininTypes.PropertyType.Farm}>{strings.FARM}</MenuItem>
         <MenuItem value={movininTypes.PropertyType.Commercial}>{strings.COMMERCIAL}</MenuItem>
         <MenuItem value={movininTypes.PropertyType.Industrial}>{strings.INDUSTRIAL}</MenuItem>
         <MenuItem value={movininTypes.PropertyType.Townhouse}>{strings.TOWN_HOUSE}</MenuItem>
+        <MenuItem value={movininTypes.PropertyType.Villa}>{strings.VILLA}</MenuItem>
       </Select>
     </div>
   )
