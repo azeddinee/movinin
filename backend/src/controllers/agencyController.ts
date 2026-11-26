@@ -211,6 +211,21 @@ export const getAgency = async (req: Request, res: Response) => {
   const { id } = req.params
 
   try {
+    const sessionUser = req.user
+    if (!sessionUser) {
+      res.status(401).send({ message: 'Unauthorized!' })
+      return
+    }
+
+    // Hosts may only access their own private account/contact details.
+    if (
+      sessionUser.type !== movininTypes.UserType.Admin
+      && (sessionUser.type !== movininTypes.UserType.Agency || sessionUser._id !== id)
+    ) {
+      res.status(403).send('Forbidden: You cannot access another agency\'s private information')
+      return
+    }
+
     const user = await User.findById(id).lean()
 
     if (!user) {
