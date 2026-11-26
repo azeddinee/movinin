@@ -60,6 +60,10 @@ const _signup = async (req: Request, res: Response, userType: movininTypes.UserT
     body.password = passwordHash
 
     user = new User(body)
+    if (userType === movininTypes.UserType.Agency) {
+      // Marketplace hosts must use online payment; cash/pay-later is disabled by default.
+      user.payLater = false
+    }
     await user.save()
 
     // avatar
