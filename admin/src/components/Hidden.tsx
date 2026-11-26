@@ -6,14 +6,16 @@ import '@/assets/css/hidden.css'
 
 interface HiddenProps {
   className?: string
+  label?: string
+  title?: string
 }
 
-const Hidden = ({ className }: HiddenProps) => (
-  <div className={`label hidden${className ? ` ${className}` : ''}`} title={strings.HIDDEN_INFO}>
+const Hidden = ({ className, label, title }: HiddenProps) => (
+  <div className={`label hidden${className ? ` ${className}` : ''}`} title={title || strings.HIDDEN_INFO}>
     <HiddenIcon className="label-icon" />
     <span>
       {' '}
-      {strings.HIDDEN}
+      {label || strings.HIDDEN}
       {' '}
     </span>
   </div>
